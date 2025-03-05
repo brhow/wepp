@@ -27,17 +27,28 @@
     </table>
 
     <script>
-        // URL للـ API الذي يوجه إلى السكربت PHP
-        const apiUrl = 'http://brhoo.free.nf/api.php'; // ضع رابط API الخاص بك هنا
+        // رابط API الخاص بك
+        const apiUrl = 'http://brhoo.free.nf/api.php'; // استبدل هذا بالرابط الصحيح
 
         // جلب البيانات من API وعرضها في الجدول
         fetch(apiUrl)
-            .then(response => response.json())
+            .then(response => {
+                // التحقق من أن الاستجابة كانت بنجاح
+                if (!response.ok) {
+                    throw new Error('حدث خطأ في جلب البيانات');
+                }
+                return response.json();
+            })
             .then(data => {
                 const tableBody = document.querySelector('#productsTable tbody');
+
+                // التحقق إذا كانت البيانات فارغة أو تحتوي على خطأ
                 if (data.error) {
                     tableBody.innerHTML = <tr><td colspan="3">${data.error}</td></tr>;
+                } else if (data.length === 0) {
+                    tableBody.innerHTML = <tr><td colspan="3">لا توجد بيانات لعرضها</td></tr>;
                 } else {
+                    // عرض المنتجات في الجدول
                     data.forEach(product => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -51,7 +62,7 @@
             })
             .catch(error => {
                 const tableBody = document.querySelector('#productsTable tbody');
-                tableBody.innerHTML = <tr><td colspan="3">حدث خطأ في جلب البيانات</td></tr>;
+                tableBody.innerHTML = <tr><td colspan="3">حدث خطأ في جلب البيانات: ${error.message}</td></tr>;
             });
     </script>
 </body>

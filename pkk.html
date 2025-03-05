@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض المنتجات</title>
+    <style>
+        body { font-family: Arial, sans-serif; direction: rtl; text-align: center; }
+        table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 10px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h2>قائمة المنتجات</h2>
+    <table id="productsTable">
+        <thead>
+            <tr>
+                <th>المعرف</th>
+                <th>اسم المنتج</th>
+                <th>السعر</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- البيانات سيتم إضافتها هنا باستخدام JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        // URL للـ API الذي يوجه إلى السكربت PHP
+        const apiUrl = 'http://brhoo.free.nf/api.php'; // ضع رابط API الخاص بك هنا
+
+        // جلب البيانات من API وعرضها في الجدول
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#productsTable tbody');
+                if (data.error) {
+                    tableBody.innerHTML = <tr><td colspan="3">${data.error}</td></tr>;
+                } else {
+                    data.forEach(product => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${product.id}</td>
+                            <td>${product.name}</td>
+                            <td>${product.price} ريال</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+            })
+            .catch(error => {
+                const tableBody = document.querySelector('#productsTable tbody');
+                tableBody.innerHTML = <tr><td colspan="3">حدث خطأ في جلب البيانات</td></tr>;
+            });
+    </script>
+</body>
+</html>

@@ -27,29 +27,26 @@
     </table>
 
     <script>
-        // رابط API الخاص بك
-        const apiUrl = 'https://brhoo.free.nf/api.php'; // استبدل هذا بالرابط الصحيح
+        // رابط API لعرض المنتجات من ReqRes
+        const apiUrl = 'https://reqres.in/api/products'; 
 
         // جلب البيانات من API وعرضها في الجدول
         fetch(apiUrl)
             .then(response => {
-                // التحقق من أن الاستجابة كانت بنجاح
                 if (!response.ok) {
                     throw new Error('حدث خطأ في جلب البيانات');
                 }
-                return response.json();
+                return response.json(); // تحويل الاستجابة إلى JSON
             })
             .then(data => {
                 const tableBody = document.querySelector('#productsTable tbody');
 
                 // التحقق إذا كانت البيانات فارغة أو تحتوي على خطأ
-                if (data.error) {
-                    tableBody.innerHTML = <tr><td colspan="3">${data.error}</td></tr>;
-                } else if (data.length === 0) {
+                if (data.data.length === 0) {
                     tableBody.innerHTML = <tr><td colspan="3">لا توجد بيانات لعرضها</td></tr>;
                 } else {
                     // عرض المنتجات في الجدول
-                    data.forEach(product => {
+                    data.data.forEach(product => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${product.id}</td>
